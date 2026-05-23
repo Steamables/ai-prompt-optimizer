@@ -1,65 +1,68 @@
 # Prompt Optimizer CLI
 
-A beginner-friendly Python command-line tool that reads a prompt from `stdin`,
-sends it to the Gemini API, and prints a clearer optimized version.
+A lightweight Python CLI that improves rough prompts using the Gemini API.
 
-## Project Structure
+The tool reads a prompt from standard input, sends it to Gemini, prints the
+optimized prompt, and stores a local prompt history in `prompt_logs.txt`.
 
-```text
-main.py              # CLI entry point: reads stdin, loads .env, prints output
-llm_client.py        # Gemini API client and API-related error handling
-prompt_templates.py  # Prompt template sent to Gemini
-requirements.txt     # Python package dependencies
-.env.example         # Example environment file
-```
+## Features
+
+- Optimizes prompts from the command line
+- Uses Gemini through the official `google-genai` package
+- Loads the API key from a local `.env` file
+- Saves prompt history locally without committing it to git
+- Keeps the code split into small beginner-friendly modules
 
 ## Setup
 
-### 1. Create and activate a virtual environment
+Create a virtual environment:
 
 ```powershell
 python -m venv .venv
+```
+
+Activate it:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 2. Install dependencies
+If PowerShell blocks activation, run this once in the same terminal:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### 3. Create your `.env` file
-
-Copy the example file:
+Create your environment file:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Then edit `.env` and add your real Gemini API key:
+Add your Gemini API key to `.env`:
 
 ```env
 GEMINI_API_KEY=your_api_key_here
 ```
 
-Do not commit `.env`. It should contain your private API key.
-
 ## Usage
-
-Send a prompt into the tool through `stdin`:
 
 ```powershell
 "Write me a LinkedIn post about my new app" | python main.py
 ```
 
-You can also read a prompt from a text file:
+Or pass a prompt from a file:
 
 ```powershell
 Get-Content prompt.txt | python main.py
 ```
-
-The tool prints only the optimized prompt, so you can copy it directly into an
-LLM chat or another tool.
 
 ## Example
 
@@ -78,12 +81,22 @@ interested in the position, highlight relevant skills or experience, and end
 with a professional closing. Keep the tone confident, concise, and respectful.
 ```
 
-## Error Handling
+## Prompt Logs
 
-The CLI includes basic error messages for common problems:
+Each successful run is appended to:
 
-- Missing `GEMINI_API_KEY`
-- Empty user input
-- Gemini API request failure
-- Gemini returning no text
+```text
+prompt_logs.txt
+```
 
+This file is ignored by git because it may contain private prompt history.
+
+## Project Structure
+
+```text
+main.py              # CLI entry point
+llm_client.py        # Gemini API client
+prompt_templates.py  # Prompt optimization template
+requirements.txt     # Python dependencies
+.env.example         # API key placeholder
+```
