@@ -1,52 +1,64 @@
-# Prompt Optimizer CLI
+# AI Prompt Optimizer
 
-A lightweight Python CLI that improves rough prompts using the Gemini API.
+A command-line prompt optimization tool powered by Gemini.
 
-The tool reads a prompt from standard input, sends it to Gemini, prints the
-optimized prompt, and stores a local prompt history in `prompt_logs.txt`.
+It takes a rough prompt from standard input and returns a clearer, more specific
+version that is easier to use with AI assistants.
 
 ## Features
 
-- Optimizes prompts from the command line
-- Uses Gemini through the official `google-genai` package
-- Loads the API key from a local `.env` file
-- Saves prompt history locally without committing it to git
-- Keeps the code split into small beginner-friendly modules
+- Optimize prompts directly from the terminal
+- Use Gemini through the `google-genai` SDK
+- Configure the API key with a local `.env` file
+- Keep prompt templates separate from API and CLI logic
+- Store local run history for reference
 
-## Setup
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Steamables/ai-prompt-optimizer.git
+cd ai-prompt-optimizer
+```
 
 Create a virtual environment:
 
-```powershell
+```bash
 python -m venv .venv
 ```
 
-Activate it:
+Activate the virtual environment:
 
-```powershell
+```bash
+# Windows PowerShell
 .\.venv\Scripts\Activate.ps1
-```
 
-If PowerShell blocks activation, run this once in the same terminal:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\.venv\Scripts\Activate.ps1
+# macOS/Linux
+source .venv/bin/activate
 ```
 
 Install dependencies:
 
-```powershell
+```bash
 pip install -r requirements.txt
 ```
 
-Create your environment file:
+## Configuration
+
+Create a `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+On Windows PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Add your Gemini API key to `.env`:
+Add your Gemini API key:
 
 ```env
 GEMINI_API_KEY=your_api_key_here
@@ -54,11 +66,19 @@ GEMINI_API_KEY=your_api_key_here
 
 ## Usage
 
-```powershell
-"Write me a LinkedIn post about my new app" | python main.py
+Optimize a prompt:
+
+```bash
+echo "Write me a LinkedIn post about my new app" | python main.py
 ```
 
-Or pass a prompt from a file:
+Optimize a prompt from a file:
+
+```bash
+python main.py < prompt.txt
+```
+
+On Windows PowerShell:
 
 ```powershell
 Get-Content prompt.txt | python main.py
@@ -66,13 +86,13 @@ Get-Content prompt.txt | python main.py
 
 ## Example
 
-Before:
+Input:
 
 ```text
 write email for job
 ```
 
-After:
+Output:
 
 ```text
 Act as a professional career assistant. Write a clear and polite job application
@@ -81,22 +101,14 @@ interested in the position, highlight relevant skills or experience, and end
 with a professional closing. Keep the tone confident, concise, and respectful.
 ```
 
-## Prompt Logs
-
-Each successful run is appended to:
-
-```text
-prompt_logs.txt
-```
-
-This file is ignored by git because it may contain private prompt history.
-
 ## Project Structure
 
 ```text
-main.py              # CLI entry point
-llm_client.py        # Gemini API client
-prompt_templates.py  # Prompt optimization template
-requirements.txt     # Python dependencies
-.env.example         # API key placeholder
+.
+|-- main.py
+|-- llm_client.py
+|-- prompt_templates.py
+|-- requirements.txt
+|-- .env.example
+`-- README.md
 ```
