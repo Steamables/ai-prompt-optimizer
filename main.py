@@ -21,7 +21,7 @@ import os
 import sys
 from pathlib import Path
 
-from llm_client import optimize_prompt
+from llm_client import EmptyGeminiResponseError, GeminiAPIError, optimize_prompt
 
 
 ENV_FILE_NAME = ".env"
@@ -67,7 +67,7 @@ def main() -> int:
     api_key = os.getenv(API_KEY_NAME)
     if not api_key:
         print(
-            f"Error: {API_KEY_NAME} was not found.\n"
+            f"Missing API key: {API_KEY_NAME} was not found.\n"
             f"Copy {project_folder / '.env.example'} to {project_folder / ENV_FILE_NAME} "
             "and add your real API key.",
             file=sys.stderr,
@@ -76,13 +76,19 @@ def main() -> int:
 
     original_prompt = read_prompt_from_stdin()
     if not original_prompt:
-        print("Error: no prompt was provided through stdin.", file=sys.stderr)
+        print("Empty input: no prompt was provided through stdin.", file=sys.stderr)
         return 1
 
     try:
         optimized_prompt = optimize_prompt(original_prompt, api_key)
+    except EmptyGeminiResponseError as error:
+        print(f"No response returned: {error}", file=sys.stderr)
+        return 1
+    except GeminiAPIError as error:
+        print(f"Gemini API failure: {error}", file=sys.stderr)
+        return 1
     except Exception as error:
-        print(f"Error: {error}", file=sys.stderr)
+        print(f"Unexpected error: {error}", file=sys.stderr)
         return 1
 
     print(optimized_prompt)
