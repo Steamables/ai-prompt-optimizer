@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from llm_client import EmptyGeminiResponseError, GeminiAPIError, optimize_prompt
@@ -26,6 +27,7 @@ from llm_client import EmptyGeminiResponseError, GeminiAPIError, optimize_prompt
 
 ENV_FILE_NAME = ".env"
 API_KEY_NAME = "GEMINI_API_KEY"
+LOG_FILE_NAME = "prompt_logs.txt"
 
 
 def load_env_file(file_path: Path) -> None:
@@ -57,6 +59,25 @@ def read_prompt_from_stdin() -> str:
         )
 
     return sys.stdin.read().strip()
+
+
+def save_prompt_log(log_file_path: Path, original_prompt: str, optimized_prompt: str) -> None:
+    """Append the original and optimized prompt to a readable log file."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"""
+============================================================
+Date/Time: {timestamp}
+
+Original Prompt:
+{original_prompt}
+
+Optimized Prompt:
+{optimized_prompt}
+
+"""
+
+    with log_file_path.open("a", encoding="utf-8") as log_file:
+        log_file.write(log_entry)
 
 
 def main() -> int:
@@ -92,6 +113,7 @@ def main() -> int:
         return 1
 
     print(optimized_prompt)
+    save_prompt_log(project_folder / LOG_FILE_NAME, original_prompt, optimized_prompt)
     return 0
 
 
